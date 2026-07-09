@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mock Test</title>
+<style>
+:root{
+  --bg-body: linear-gradient(135deg,#667eea,#764ba2);
+  --bg-card: #fff;
+  --bg-card-alt: #f8f9ff;
+  --bg-score: #f3f4f6;
+  --bg-detail: #f0f0f5;
+  --bg-explanation: #f3f4f6;
+  --bg-blurb: #fff8e1;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --accent: #667eea;
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --border-default: #e5e7eb;
+  --shadow-card: 0 4px 20px rgba(0,0,0,.08);
+  --shadow-card-hover: 0 10px 40px rgba(0,0,0,.12);
+}
+body{
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background: var(--bg-body);
+  min-height: 100vh;
+  padding: 20px;
+  margin: 0;
+}
+.card{
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-card);
+  max-width: 700px;
+  margin: 0 auto;
+}
+.result-card{
+  background: var(--bg-card-alt);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 14px;
+  border-left: 6px solid #667eea;
+}
+.scores-bar{
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+.score-item{
+  flex: 1;
+  min-width: 65px;
+  text-align: center;
+  padding: 6px 2px;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+.score-item .label{font-size:11px;color:#9ca3af}
+.score-item .value{font-size:16px;font-weight:700;color:#1f2937}
+.good{color:#10b981}.ok{color:#f59e0b}
+.explain-box{
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 8px 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.explain-box .tl{font-weight:600;margin-bottom:4px;color:#6b7280}
+.detail-bar{
+  background: #f0f0f5;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  margin-top: 6px;
+}
+.detail-bar span{
+  background: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.compare-bar{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.compare-bar h2{font-size:16px;color:#1f2937}
+.cmp-hint{font-size:12px;color:#9ca3af}
+.cmp-btn{
+  padding: 7px 14px;
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.cmp-btn:disabled{background:#ccc;cursor:not-allowed}
+.ai-blurb{
+  background: #fff8e1;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 8px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  border-left: 3px solid #ffd700;
+  position: relative;
+}
+.ai-blurb .ai-tag{
+  position: absolute;
+  top: -7px;
+  right: 8px;
+  background: #ffd700;
+  color: #333;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.more-menu{position:relative;display:inline-block;margin-left:auto}
+.more-btn{
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 2px 10px;
+  line-height: 1;
+}
+.more-btn:hover{background:#f3f4f6;border-color:#667eea}
+.more-dropdown{
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  z-index: 100;
+  min-width: 150px;
+  padding: 4px;
+}
+.more-dropdown.active{display:block}
+.more-dropdown button{
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  color: #1f2937;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 6px;
+}
+.more-dropdown button:hover{background:#f3f4f6}
+.more-dropdown button:disabled{color:#9ca3af;cursor:not-allowed}
+.more-dropdown button:disabled:hover{background:none}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="compare-bar">
+    <h2>推荐 (3)</h2>
+    <span class="cmp-hint">点击圆圈选择对比 (选2-3个)</span>
+    <div class="more-menu">
+      <button class="more-btn" onclick="toggleMoreMenu(event)">...</button>
+      <div class="more-dropdown" id="moreDropdown">
+        <button id="cmpBtn" disabled>VS 对比 (0)</button>
+        <button>PDF 导出 PDF</button>
+        <button>Link 联游方案</button>
+      </div>
+    </div>
+  </div>
+  <div class="result-card" style="border-left-color:#ffd700">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="sel-circle"></span><b>#1 杭州</b>
+    </div>
+    <div class="ai-blurb">
+      <div class="ai-tag">AI 推荐</div>
+      杭州西湖是著名的旅游胜地...
+    </div>
+    <div class="scores-bar">
+      <div class="score-item"><div class="label">成本</div><div class="value good">4.0</div></div>
+      <div class="score-item"><div class="label">路线</div><div class="value good">4.5</div></div>
+      <div class="score-item"><div class="label">评价</div><div class="value good">4.2</div></div>
+      <div class="score-item"><div class="label">天气</div><div class="value good">4.5</div></div>
+      <div class="score-item"><div class="label">偏好</div><div class="value ok">3.0</div></div>
+    </div>
+    <div class="explain-box">
+      <div class="tl">评分详情</div>
+      <div><b>成本</b> (4.0/5) — 预算友好</div>
+      <div><b>路线</b> (4.5/5) — 交通便利</div>
+      <div><b>评价</b> (4.2/5) — 口碑好</div>
+      <div><b>偏好</b> (3.0/5) — 较匹配</div>
+    </div>
+    <div class="detail-bar">
+      <span>住宿 <b>¥200</b></span>
+      <span>餐饮 <b>¥150</b></span>
+      <span>门票 <b>¥100</b></span>
+      <span>天气 <b>28/22°C</b></span>
+    </div>
+  </div>
+  <div class="result-card" style="border-left-color:#c0c0c0">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="sel-circle"></span><b>#2 黄山</b>
+    </div>
+    <div class="scores-bar">
+      <div class="score-item"><div class="label">成本</div><div class="value ok">3.0</div></div>
+      <div class="score-item"><div class="label">路线</div><div class="value good">4.5</div></div>
+      <div class="score-item"><div class="label">评价</div><div class="value good">4.6</div></div>
+      <div class="score-item"><div class="label">天气</div><div class="value good">4.5</div></div>
+      <div class="score-item"><div class="label">偏好</div><div class="value ok">3.4</div></div>
+    </div>
+    <div class="detail-bar">
+      <span>住宿 <b>¥180</b></span>
+      <span>餐饮 <b>¥120</b></span>
+      <span>门票 <b>¥230</b></span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

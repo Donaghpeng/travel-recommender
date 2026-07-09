@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🐾 NJ 个人学习操作系统 v1.0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+body{background:#0f0f1a;color:#e0e0f0;min-height:100vh}
+
+/* ── Header ── */
+.hero{background:linear-gradient(135deg,#1a1a3e,#0d0d20);padding:40px 20px;text-align:center;border-bottom:1px solid #2a2a50}
+.hero h1{font-size:2em;margin-bottom:6px;background:linear-gradient(135deg,#818cf8,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .badge{display:inline-block;background:#2a2a50;border:1px solid #3a3a60;border-radius:20px;padding:4px 14px;font-size:12px;color:#999}
+.hero .sub{color:#888;font-size:14px;margin-top:8px;line-height:1.6}
+.hero .sub strong{color:#c0c0f0}
+.hero .bark{font-size:32px;margin-bottom:8px;display:block}
+
+/* ── Container ── */
+.container{max-width:920px;margin:0 auto;padding:20px 16px}
+
+/* ── Section ── */
+.section{border:1px solid #2a2a48;border-radius:16px;padding:28px;margin-bottom:24px;background:linear-gradient(135deg,#14142a,#10101e)}
+.section-title{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid #2a2a48}
+.section-title .icon{font-size:24px}
+.section-title h2{font-size:20px;color:#e0e0f0}
+.section-title .tag{font-size:11px;background:#2a2a50;color:#8888b0;padding:2px 8px;border-radius:6px}
+
+/* ── Profile Card ── */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.profile-grid{grid-template-columns:1fr}}
+.profile-card{background:linear-gradient(135deg,#1a1a38,#12122a);border:1px solid #2a2a50;border-radius:12px;padding:16px}
+.profile-card .label{font-size:11px;color:#8888a0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.profile-card .value{font-size:15px;color:#e0e0f0;line-height:1.5}
+.profile-card .value .high{color:#fbbf24;font-weight:600}
+.profile-card .value .warn{color:#f87171}
+.profile-card .value .ok{color:#34d399}
+.profile-card .value .accent{color:#818cf8}
+.tag-group{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tag{background:#2a2a50;border:1px solid #3a3a60;border-radius:8px;padding:3px 10px;font-size:12px;color:#b0b0d0}
+.tag.high{background:#1a3a1a;border-color:#34d399;color:#34d399}
+.tag.warn{background:#3a1a1a;border-color:#f87171;color:#f87171}
+.tag.accent{background:#1a1a3e;border-color:#818cf8;color:#818cf8}
+
+/* ── Insight Quote ── */
+.insight{border-left:3px solid #fbbf24;background:linear-gradient(135deg,#1a1a2e,#12122a);border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14px;line-height:1.7;color:#d0d0e0}
+.insight strong{color:#fbbf24}
+.insight .src{display:block;font-size:11px;color:#8888a0;margin-top:6px}
+
+/* ── Flowchart ── */
+.flow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px 0}
+.flow-step{background:linear-gradient(135deg,#1e1e3e,#161630);border:1px solid #3a3a60;border-radius:12px;padding:14px;min-width:140px;flex:1;text-align:center;position:relative}
+.flow-step .num{display:inline-flex;width:28px;height:28px;border-radius:50%;background:#818cf8;color:#fff;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-bottom:8px}
+.flow-step .step-title{font-size:14px;font-weight:600;color:#e0e0f0;margin-bottom:4px}
+.flow-step .step-desc{font-size:12px;color:#8888a0;line-height:1.5}
+.flow-step .step-desc em{color:#fbbf24;font-style:normal}
+.flow-arrow{color:#3a3a60;font-size:24px;display:flex;align-items:center}
+@media(max-width:600px){.flow-arrow{display:none}}
+.focus-step{border-color:#fbbf24;background:linear-gradient(135deg,#2a2a1e,#1e1e12)}
+
+/* ── Daily Cycle ── */
+.daily-timeline{position:relative;padding:10px 0}
+.daily-item{display:flex;gap:16px;margin-bottom:16px;align-items:flex-start}
+.daily-item .time{min-width:70px;font-size:13px;color:#8888a0;font-weight:600;text-align:right;padding-top:2px}
+.daily-item .bar{width:3px;min-height:44px;border-radius:2px;flex-shrink:0}
+.daily-item .content{flex:1;background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:12px}
+.daily-item .content .act{font-size:14px;font-weight:600;color:#e0e0f0;margin-bottom:3px}
+.daily-item .content .note{font-size:12px;color:#8888a0;line-height:1.5}
+.bar-green{background:#34d399}.bar-blue{background:#818cf8}.bar-amber{background:#fbbf24}.bar-red{background:#f87171}.bar-purple{background:#c084fc}
+
+/* ── Template ── */
+.template-box{background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:16px;margin:14px 0;font-family:monospace;font-size:13px;line-height:1.7;white-space:pre-wrap;color:#c0c0d8}
+.template-box .hl{color:#fbbf24}
+.template-box .hl2{color:#818cf8}
+.template-box .hl3{color:#34d399}
+
+/* ── Card Grid ── */
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.card-grid{grid-template-columns:1fr}}
+.card-item{border:1px solid #2a2a50;border-radius:12px;padding:18px;background:linear-gradient(135deg,#181834,#12122a)}
+.card-item .ci-icon{font-size:28px;margin-bottom:8px;display:block}
+.card-item .ci-title{font-size:15px;font-weight:600;color:#e0e0f0;margin-bottom:6px}
+.card-item .ci-body{font-size:13px;color:#8888a0;line-height:1.7}
+
+/* ── Config Section ── */
+.goal-list{list-style:none}
+.goal-list li{background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.goal-list li .g-num{width:26px;height:26px;border-radius:50%;background:#818cf8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.goal-list li .g-name{font-weight:600;color:#e0e0f0;flex-shrink:0;min-width:100px}
+.goal-list li .g-desc{font-size:12px;color:#8888a0}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:30px;color:#555;font-size:12px}
+.footer .bark{font-size:24px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="bark">🐾</span>
+  <h1>NJ 个人学习操作系统</h1>
+  <span class="badge">Learning OS v1.0</span>
+  <div class="sub">
+    基于 <strong>30 项学习诊断</strong> 定制 · 实践驱动型学习人格<br>
+    为 NJ 解决：<strong>「看了就忘，难以联系 · 缺乏持续动力」</strong>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ════════ 1. 诊断报告 ════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🔬</span>
+    <h2>学习诊断报告</h2>
+    <span class="tag">30 项评估</span>
+  </div>
+
+  <div class="profile-grid">
+
+    <div class="profile-card">
+      <div class="label">🧬 学习人格类型</div>
+      <div class="value"><span class="high">实践驱动型</span> · <span class="accent">反馈依赖者</span></div>
+      <div class="tag-group">
+        <span class="tag high">动手型</span>
+        <span class="tag accent">项目驱动</span>
+        <span class="tag">看书自学</span>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <div class="label">💪 最大优势</div>
+      <div class="value"><span class="ok">每天稳定 2-3 小时学习投入</span></div>
+      <div style="font-size:12px;color:#8888a0;margin-top:4px">能坚持三年半健身——证明有长线执行力</div>
+    </div>
+
+    <div class="profile-card">
+      <div class="label">⚠️ 核心短板</div>
+      <div class="value"><span class="warn">知识碎片化 · 无连接 · 无复盘机制</span></div>
+      <div style="font-size:12px;color:#8888a0;margin-top:4px">看了就忘 → 学了用不上 → 失去动力 → 放弃</div>
+    </div>
+
+    <div class="profile-card">
+      <div class="label">🎯 核心诉求</div>
+      <div class="value"><span class="high">能够持续有动力地学习</span></div>
+      <div class="tag-group">
+        <span class="tag accent">深度优先</span>
+        <span class="tag">效率+持续平衡</span>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <div class="label">🔥 拖延触发器</div>
+      <div class="value">
+        <span class="warn">遇到困难</span> + <span class="warn">工作累</span> → <span class="warn">刷短视频</span>
+      </div>
+    </div>
+
+    <div class="profile-card">
+      <div class="label">🧠 认知特点</div>
+      <div class="value">
+        <span class="accent">先做再理解</span> · 能记住部分观点<br>
+        <span class="warn">懂但讲不清</span> · 容易「眼高手低」
+      </div>
+    </div>
+
+  </div>
+
+  <div class="insight">
+    <strong>🐾 小比的核心洞察：</strong>
+    NJ 的问题不是「不够努力」，而是 <strong>「努力没有产生可见反馈」</strong>。<br>
+    健身能坚持三年半，是因为 <strong>每次照镜子都能看到变化</strong>。<br>
+    编程/学习坚持不下去，是因为 <strong>学了一周发现自己还是不会写</strong>——没有镜子可照。<br><br>
+    所以这套系统的核心设计理念是：<strong>「给学习装一面镜子」</strong>——让每一步都留下可回顾、可触摸的痕迹。
+    <span class="src">🦴 小比啃着骨头想出来的</span>
+  </div>
+</div>
+
+<!-- ════════ 2. 技能学习流程图 ════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🗺️</span>
+    <h2>技能学习流程图</h2>
+    <span class="tag">通用模板</span>
+  </div>
+  <p style="color:#8888a0;font-size:14px;margin:-10px 0 10px">学任何新技能都走这个流程，闭环运转。</p>
+
+  <div class="flow">
+    <div class="flow-step focus-step">
+      <div class="num">1</div>
+      <div class="step-title">🎯 目标定型</div>
+      <div class="step-desc">不要「学好XX」<br>要 <em>"能做出XXX"</em></div>
+    </div>
+    <div class="flow-arrow">➡</div>
+    <div class="flow-step">
+      <div class="num">2</div>
+      <div class="step-title">📦 教程锁定</div>
+      <div class="step-desc">只找 <em>1 个</em> 教程<br>不囤积！不开新坑！</div>
+    </div>
+    <div class="flow-arrow">➡</div>
+    <div class="flow-step">
+      <div class="num">3</div>
+      <div class="step-title">🛠️ 项目驱学</div>
+      <div class="step-desc">看完就动手<br><em>不懂再回头看</em></div>
+    </div>
+    <div class="flow-arrow">➡</div>
+    <div class="flow-step">
+      <div class="num">4</div>
+      <div class="step-title">🔍 反馈检查</div>
+      <div class="step-desc">做出来了吗？<br>卡在哪？<em>记录</em></div>
+    </div>
+    <div class="flow-arrow">➡</div>
+    <div class="flow-step">
+      <div class="num">5</div>
+      <div class="step-title">📝 知识提取</div>
+      <div class="step-desc">把踩坑经验<br><em>写成卡片</em> 固化</div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div style="background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:14px">
+      <div style="font-size:13px;font-weight:600;color:#fbbf24;margin-bottom:6px">🎯 目标定型的铁律</div>
+      <ul style="font-size:12px;color:#8888a0;line-height:1.7;list-style:none;padding:0">
+        <li>✗ "学 AI 编程" ❌</li>
+        <li>✓ "用 Cursor 做出一个能用的网页爬虫" ✅</li>
+        <li>✓ "用硬件开发板点亮 LED 并联网控制" ✅</li>
+      </ul>
+    </div>
+    <div style="background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:14px">
+      <div style="font-size:13px;font-weight:600;color:#fbbf24;margin-bottom:6px">📦 教程锁定的铁律</div>
+      <ul style="font-size:12px;color:#8888a0;line-height:1.7;list-style:none;padding:0">
+        <li>✗ 收藏 10 个教程然后陷入选择瘫痪 😵</li>
+        <li>✓ 选 1 个评价最高的 → <strong>锁死</strong> → 啃完为止</li>
+        <li>✓ 完成后再考虑要不要看别的</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ 3. 每日执行机制 ════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">⚡</span>
+    <h2>每日执行机制</h2>
+    <span class="tag">下午+晚上 · 2-3h</span>
+  </div>
+
+  <div class="daily-timeline">
+
+    <div class="daily-item">
+      <div class="time">第一步<br><span style="font-size:11px">3-5 分钟</span></div>
+      <div class="bar bar-green"></div>
+      <div class="content">
+        <div class="act">🌱 最小启动：打开昨天停下的地方</div>
+        <div class="note">不要计划，不要热身。直接打开文件/项目/书——第一件事就是 <strong>做</strong>。</div>
+      </div>
+    </div>
+
+    <div class="daily-item">
+      <div class="time">第二步<br><span style="font-size:11px">40-60 分钟</span></div>
+      <div class="bar bar-blue"></div>
+      <div class="content">
+        <div class="act">🛠️ 深度工作块 #1</div>
+        <div class="note">
+          做最核心的任务。<br>
+          <strong>规则：</strong>如果遇到难题卡住 <em>超过 10 分钟</em> → 标记障碍点 → 切换（不是放弃，是缓存进度）
+        </div>
+      </div>
+    </div>
+
+    <div class="daily-item">
+      <div class="time">间隙<br><span style="font-size:11px">5-10 分钟</span></div>
+      <div class="bar bar-amber"></div>
+      <div class="content">
+        <div class="act">🧘 主动休息（不是刷手机！）</div>
+        <div class="note">
+          站起来 · 走几步 · 喝水 · 看窗外<br>
+          <span style="color:#f87171">❌ 不要碰短视频 —— 一旦开刷基本回不来</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="daily-item">
+      <div class="time">第三步<br><span style="font-size:11px">40-60 分钟</span></div>
+      <div class="bar bar-blue"></div>
+      <div class="content">
+        <div class="act">🛠️ 深度工作块 #2</div>
+        <div class="note">继续工作块#1 或切换到另一个任务（按目标优先级）</div>
+      </div>
+    </div>
+
+    <div class="daily-item">
+      <div class="time">最后<br><span style="font-size:11px">5 分钟</span></div>
+      <div class="bar bar-purple"></div>
+      <div class="content">
+        <div class="act">📝 每日三行记录</div>
+        <div class="note">写 3 条（不多不少）：<br>
+          <span style="color:#34d399">① 今天完成了什么？</span><br>
+          <span style="color:#fbbf24">② 卡在哪？</span><br>
+          <span style="color:#818cf8">③ 明天第一步做什么？</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════ 4. 周复盘模板 ════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🔄</span>
+    <h2>周复盘模板</h2>
+    <span class="tag">每周日 15 分钟</span>
+  </div>
+  <p style="color:#8888a0;font-size:14px;margin:-10px 0 14px">不是「今天学了什么」，而是「这周留下了什么」。</p>
+
+  <div class="card-grid">
+    <div class="card-item">
+      <span class="ci-icon">📊</span>
+      <div class="ci-title">进度快照</div>
+      <div class="ci-body">
+        翻看 7 天的「每日三行记录」，数出：<br>
+        ✅ 完成了几件事？<br>
+        ❌ 卡在几个点上？<br>
+        ⏭️ 哪些没开始？
+      </div>
+    </div>
+    <div class="card-item">
+      <span class="ci-icon">🔗</span>
+      <div class="ci-title">连接点发现</div>
+      <div class="ci-body">
+        「这周学的东西，和 <strong>上周的什么有关</strong>？」<br>
+        哪怕只有一个连接，也要写下来。<br>
+        <em style="color:#fbbf24">解决「学了很多但连不起来」</em>
+      </div>
+    </div>
+    <div class="card-item">
+      <span class="ci-icon">🛡️</span>
+      <div class="ci-title">障碍清单</div>
+      <div class="ci-body">
+        这周被什么事 <strong>打断/拖住</strong> 了？<br>
+        - 是内容太难？<br>
+        - 是工作太累？<br>
+        - 是没想清楚为什么学？<br>
+        识别出来，下周就能绕过去。
+      </div>
+    </div>
+    <div class="card-item">
+      <span class="ci-icon">🎯</span>
+      <div class="ci-title">下周主攻</div>
+      <div class="ci-body">
+        只定 <strong>1 件事</strong> 作为下周的核心目标。<br>
+        不要列3件——列了等于没列。<br>
+        <em style="color:#818cf8">「这周做完这一件事就算胜利」</em>
+      </div>
+    </div>
+  </div>
+
+  <p style="color:#8888a0;font-size:13px;margin-top:14px"><strong>💡 实际操作</strong>：写在纸质笔记本的首页，每周日翻到同一页，写满 2 页纸就是一次完整的复盘。</p>
+</div>
+
+<!-- ════════ 5. 知识归纳框架 ════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🧠</span>
+    <h2>知识归纳框架</h2>
+    <span class="tag">解「看了就忘」</span>
+  </div>
+  <p style="color:#8888a0;font-size:14px;margin:-10px 0 14px">看完一个知识点 → 用统一格式写成卡片，每周翻一次。</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+    <div style="background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:16px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px">📇 卡片模板（纸质/电子皆可）</div>
+      <div class="template-box">
+┌─────────────────────────┐
+│ <span class="hl">📌 [概念名称]</span>                 │
+│ <span class="hl2">📆 2026-06-18</span>                  │
+│─────────────────────────│
+│ <span class="hl3">Q:</span> 它能解决什么问题？             │
+│ <span class="hl3">A:</span> 一句话解释                     │
+│─────────────────────────│
+│ <span class="hl3">💡 自己的理解:</span>                   │
+│  用 NJ 的话写，不是抄书              │
+│─────────────────────────│
+│ <span class="hl3">🔗 连接:</span> 它和之前学的          │
+│  XX 是什么关系？                       │
+└─────────────────────────┘
+      </div>
+    </div>
+    <div style="background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:16px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px">✍️ 例子（假设在学 Cursor）</div>
+      <div class="template-box" style="border-color:#3a3a60">
+┌─────────────────────────┐
+│ 📌 <span class="hl">Cursor Rules</span>                   │
+│ 📆 2026-06-18                 │
+│─────────────────────────│
+│ Q: 它做什么？                   │
+│ A: 告诉 AI 项目上下文，        │
+│    让生成更精准                 │
+│─────────────────────────│
+│ 💡 自己的理解:                  │
+│   像给新同事写 onboarding      │
+│   文档——把规矩说清楚           │
+│─────────────────────────│
+│ 🔗 连接: 和 .cursorrules       │
+│    文件是一回事                 │
+└─────────────────────────┘
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <strong>🐾 小比提示：</strong>
+    你不用记住所有卡片。<br>
+    关键是 <strong>「写卡片」这个动作本身就在强化记忆</strong> —— 它逼你用自已的话把东西说一遍。<br>
+    每周日翻一翻，一眼就能看到「这周学了什么」——那面镜子的作用就出来了。
+  </div>
+
+  <div style="margin-top:14px;background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:14px">
+    <div style="font-size:13px;font-weight:600;color:#fbbf24;margin-bottom:6px">📎 知识连接的技巧（针对「难以联系」）</div>
+    <ul style="font-size:12px;color:#8888a0;line-height:1.9;list-style:none;padding:0">
+      <li>🔗 <strong>「这个像什么」</strong> — 新知识像以前学过的什么？用类比写下来</li>
+      <li>🔗 <strong>「它们是什么关系」</strong> — A 是 B 的前置？A 和 B 是并列/互补？</li>
+      <li>🔗 <strong>「这个推翻了我之前哪个认知」</strong> — 冲突点最值得记录</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ════════ 6. 防放纵机制 ════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">🛡️</span>
+    <h2>防放纵机制</h2>
+    <span class="tag">专治「困难+累→刷视频」</span>
+  </div>
+
+  <div class="card-grid">
+    <div class="card-item" style="border-color:#f87171">
+      <span class="ci-icon">⏰</span>
+      <div class="ci-title" style="color:#f87171">5 分钟启动法</div>
+      <div class="ci-body">
+        不想学的时候，<strong>只要求自己做 5 分钟</strong>。<br>
+        5 分钟后如果还想停，可以停。<br>
+        <em style="color:#888">实际上 99% 的情况下，5 分钟后你就进入了。</em>
+      </div>
+    </div>
+    <div class="card-item" style="border-color:#818cf8">
+      <span class="ci-icon">🔄</span>
+      <div class="ci-title" style="color:#818cf8">换脑策略</div>
+      <div class="ci-body">
+        遇到难题卡住时，<strong>不要刷短视频</strong>。<br>
+        换成：<br>
+        - 整理之前的笔记<br>
+        - 换一个更简单的子任务<br>
+        - 或者直接站起来走 2 分钟<br>
+        <span style="color:#f87171">短视频是单行道，一旦进去就很难回头。</span>
+      </div>
+    </div>
+    <div class="card-item" style="border-color:#34d399">
+      <span class="ci-icon">🧹</span>
+      <div class="ci-title" style="color:#34d399">环境隔离</div>
+      <div class="ci-body">
+        把手机放在 <strong>另一个房间</strong>。<br>
+        学完才能拿回来。<br>
+        <em style="color:#888">意志力是靠不住的——别考验它。</em>
+      </div>
+    </div>
+    <div class="card-item" style="border-color:#fbbf24">
+      <span class="ci-icon">❓</span>
+      <div class="ci-title" style="color:#fbbf24">「为什么学」检查</div>
+      <div class="ci-body">
+        如果你突然觉得 <strong>「没意义了」</strong>——<br>
+        停下，问自己三个问题：<br>
+        ① 我当初为什么要学这个？<br>
+        ② 我已经会了什么？（翻卡片）<br>
+        ③ 再往前走一步能看到什么？<br>
+        很多时候「没意义」只是因为卡住了，不是真的没意义。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ 7. 每日记录模板 ════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">📝</span>
+    <h2>每日三行模板</h2>
+    <span class="tag">5 分钟搞定</span>
+  </div>
+  <p style="color:#8888a0;font-size:14px;margin:-10px 0 14px">
+    每天学习结束写 3 行，不多不少。这是给 NJ 的「学习镜子」。
+  </p>
+
+  <div style="background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:20px;font-size:13px;line-height:1.8">
+    <div style="margin-bottom:8px"><span style="color:#34d399;font-weight:600">① 今天做了什么：</span> <span style="color:#8888a0">_________________</span></div>
+    <div style="margin-bottom:8px"><span style="color:#fbbf24;font-weight:600">② 卡在了哪里：</span> <span style="color:#8888a0">_________________</span></div>
+    <div style="margin-bottom:8px"><span style="color:#818cf8;font-weight:600">③ 明天第一步：</span> <span style="color:#8888a0">_________________</span></div>
+  </div>
+
+  <p style="color:#8888a0;font-size:13px;margin-top:10px">
+    💡 <strong>为什么只写 3 行？</strong><br>
+    因为你之前「不做笔记、做完才复盘」——3 行是门槛最低的起点。<br>
+    如果一开始就设计复杂的笔记系统，你大概率不会坚持。<br>
+    先养成 <strong>每天 3 行</strong> 的习惯，一个月后如果觉得不够再升级。
+  </p>
+</div>
+
+<!-- ════════ 8. NJ 专属配置 ════════ -->
+<div class="section">
+  <div class="section-title">
+    <span class="icon">⚙️</span>
+    <h2>NJ 专属配置</h2>
+    <span class="tag">你的三年路线</span>
+  </div>
+
+  <p style="color:#8888a0;font-size:14px;margin:-10px 0 14px">
+    基于你的三个目标：<strong>自主规划能力</strong> · <strong>AI 编程</strong> · <strong>硬件设计</strong>
+  </p>
+
+  <ul class="goal-list">
+    <li>
+      <span class="g-num">🥇</span>
+      <span class="g-name">AI 编程能力</span>
+      <span class="g-desc">从「用 Cursor 做工具」开始 → 到「能搭完整项目」。<br>
+        <span style="color:#888;font-size:11px">优先攻克这个，因为它能直接辅助后面两个目标。</span>
+      </span>
+    </li>
+    <li>
+      <span class="g-num">🥈</span>
+      <span class="g-name">硬件设计能力</span>
+      <span class="g-desc">基础电路 + Arduino/ESP32 开发板 → 物联网小项目。<br>
+        <span style="color:#888;font-size:11px">物理世界能看到效果——正好匹配你的「反馈依赖」人格。</span>
+      </span>
+    </li>
+    <li>
+      <span class="g-num">🥉</span>
+      <span class="g-name">自主规划能力</span>
+      <span class="g-desc">这个不是「学」出来的，是「练」出来的。<br>
+        <span style="color:#888;font-size:11px">执行这套 Learning OS 本身就是在锻炼自主规划能力。</span>
+      </span>
+    </li>
+  </ul>
+
+  <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+    <div style="background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:28px;margin-bottom:4px">🗓️</div>
+      <div style="font-size:13px;font-weight:600;color:#e0e0f0">学习时段</div>
+      <div style="font-size:12px;color:#8888a0;margin-top:4px">下午 + 晚上<br>每天 2-3 小时</div>
+    </div>
+    <div style="background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:28px;margin-bottom:4px">📐</div>
+      <div style="font-size:13px;font-weight:600;color:#e0e0f0">风格偏好</div>
+      <div style="font-size:12px;color:#8888a0;margin-top:4px">实践型 · 先做再理解<br>看书 + 动手项目</div>
+    </div>
+    <div style="background:#1a1a38;border:1px solid #2a2a50;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:28px;margin-bottom:4px">🎯</div>
+      <div style="font-size:13px;font-weight:600;color:#e0e0f0">系统偏好</div>
+      <div style="font-size:12px;color:#8888a0;margin-top:4px">效率+持续平衡<br>深度优先</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ 9. 从此刻开始 ════════ -->
+<div class="section" style="border-color:#818cf8">
+  <div class="section-title">
+    <span class="icon">🚀</span>
+    <h2>从此刻开始的行动清单</h2>
+    <span class="tag">今天就能做</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div style="border:1px solid #2a2a50;border-radius:10px;padding:14px;background:#1a1a38">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:#e0e0f0">
+        <span style="display:inline-flex;width:20px;height:20px;border:2px solid #818cf8;border-radius:4px;flex-shrink:0;margin-top:1px;background:transparent"></span>
+        <span><strong>📓 准备一个笔记本</strong><br><span style="font-size:12px;color:#8888a0">纸质最好，放在书桌上。每天三行记录+每周复盘都用它。</span></span>
+      </label>
+    </div>
+    <div style="border:1px solid #2a2a50;border-radius:10px;padding:14px;background:#1a1a38">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:#e0e0f0">
+        <span style="display:inline-flex;width:20px;height:20px;border:2px solid #818cf8;border-radius:4px;flex-shrink:0;margin-top:1px;background:transparent"></span>
+        <span><strong>🎯 锁定第一个项目</strong><br><span style="font-size:12px;color:#8888a0">从三个目标中选一个，定一个具体可交付的「完工标准」。</span></span>
+      </label>
+    </div>
+    <div style="border:1px solid #2a2a50;border-radius:10px;padding:14px;background:#1a1a38">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:#e0e0f0">
+        <span style="display:inline-flex;width:20px;height:20px;border:2px solid #818cf8;border-radius:4px;flex-shrink:0;margin-top:1px;background:transparent"></span>
+        <span><strong>📦 清空收藏夹</strong><br><span style="font-size:12px;color:#8888a0">把所有囤积的教程/链接打开看一遍，只留 1 个。其余删掉或归档。</span></span>
+      </label>
+    </div>
+    <div style="border:1px solid #2a2a50;border-radius:10px;padding:14px;background:#1a1a38">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:#e0e0f0">
+        <span style="display:inline-flex;width:20px;height:20px;border:2px solid #818cf8;border-radius:4px;flex-shrink:0;margin-top:1px;background:transparent"></span>
+        <span><strong>🛡️ 设置防放纵环境</strong><br><span style="font-size:12px;color:#8888a0">学习时把手机放到另一个房间。今天就试一次。</span></span>
+      </label>
+    </div>
+  </div>
+
+  <p style="color:#8888a0;font-size:13px;margin-top:16px;text-align:center">
+    做完这 4 件事，系统就启动了。剩下的就是 <strong>每天 3 行 + 每周复盘一次</strong>。
+  </p>
+</div>
+
+<!-- ════════ Footer ════════ -->
+<div class="footer">
+  <div class="bark">🐾</div>
+  小比 Learning OS v1.0 · 为 NJ 定制 · 2026-06-18<br>
+  系统会随着你的反馈不断进化。<br>
+  <span style="color:#666">「给学习装一面镜子」</span>
+</div>
+
+</div>
+
+</body>
+</html>

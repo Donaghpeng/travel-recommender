@@ -1,0 +1,13 @@
+C:\Users\Donaghy\Desktop\travel-recommender\app.py:227: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+INFO:     Started server process [39668]
+INFO:     Waiting for application startup.
+12:17:09 [INFO] [memory] long-term index: 58 destinations
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+13:03:06 [INFO] [poi] loaded 24413 destinations, 111 cities, 7 types

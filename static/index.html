@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>旅行推荐系统</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cabinet+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ── Editorial Dark Theme (only) ── */
+  --bg-body: #0a0a0a;
+  --bg-card: #141414;
+  --bg-card-alt: #1a1a1a;
+  --bg-card-selected: rgba(167,139,250,0.08);
+  --bg-surface: #1e1e1e;
+  --bg-glass: rgba(20,20,20,0.6);
+  --bg-score: #1e1e1e;
+  --bg-skeleton: #222;
+  --bg-modal-overlay: rgba(0,0,0,.7);
+  --bg-modal: #141414;
+  --bg-explanation: #1a1a1a;
+  --bg-blurb: #1a1500;
+  --bg-itin: #0a1520;
+  --bg-sep: #222;
+  --popup-bg: #1a1a1a;
+  /* Text */
+  --text-primary: #fafafa;
+  --text-secondary: #a3a3a3;
+  --text-muted: #666;
+  --text-on-image: #fff;
+  /* Borders */
+  --border-default: #2a2a2a;
+  --border-card: #2a2a2a;
+  /* Shadows */
+  --shadow-card: 0 10px 40px rgba(0,0,0,.5);
+  --shadow-card-hover: 0 8px 24px rgba(0,0,0,.6);
+  /* Accent — 冷调暗金灰紫 */
+  --accent: #a78bfa;
+  --accent-dim: rgba(167,139,250,0.3);
+  --accent-glow: 0 0 20px rgba(167,139,250,0.15);
+  --green: #34d399;
+  --amber: #fbbf24;
+  --red: #f87171;
+  /* Editorial spacing */
+  --font-display: 'Cabinet Grotesk', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* ── Grain/noise overlay ── */
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+body{font-family:var(--font-body);background:var(--bg-body);color:var(--text-primary);min-height:100vh;padding:0;overflow-x:hidden}
+.container{max-width:1280px;margin:0 auto;padding:24px 20px}
+
+/* ── Editorial header ── */
+h1{font-family:var(--font-display);font-weight:800;font-size:42px;letter-spacing:-0.03em;color:var(--text-primary);text-align:center;margin:12px 0 8px;line-height:1.1}
+h1 .sub{display:block;font-family:var(--font-body);font-size:13px;font-weight:400;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:4px}
+
+/* ── Glass card ── */
+.card{background:var(--bg-glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border-card);border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow-card)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column}
+.form-group.full{grid-column:1/-1}
+label{font-family:var(--font-body);font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+select,input{padding:10px 12px;border:1px solid var(--border-default);border-radius:8px;font-family:var(--font-body);font-size:13px;background:rgba(255,255,255,0.03);color:var(--text-primary);outline:none;transition:border-color .2s,box-shadow .2s}
+select:focus,input:focus{border-color:var(--accent);box-shadow:var(--accent-glow)}
+
+/* ── Search button ── */
+.btn{grid-column:1/-1;padding:12px;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;border:none;border-radius:10px;font-family:var(--font-display);font-size:15px;font-weight:600;letter-spacing:0.02em;cursor:pointer;transition:opacity .2s,transform .1s,box-shadow .2s;position:relative}
+.btn:hover{box-shadow:0 0 24px rgba(167,139,250,0.25)}
+.btn:active{transform:scale(.97)}
+.btn.loading{opacity:.7;pointer-events:none}
+.btn .spinner{display:none;width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;position:absolute;left:50%;top:50%;margin:-9px 0 0 -9px}
+.btn.loading .spinner{display:block}
+.btn.loading .btn-text{visibility:hidden}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Skeleton loading ── */
+.skeleton-card{background:var(--bg-card);border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow-card);animation:pulse 1.5s ease-in-out infinite}
+.skeleton-card .sk-img{width:100%;height:140px;border-radius:12px;background:var(--bg-skeleton);margin-bottom:12px}
+.skeleton-card .sk-line{height:16px;background:var(--bg-skeleton);border-radius:4px;margin-bottom:8px}
+.skeleton-card .sk-line:nth-child(2){width:60%}
+.skeleton-card .sk-line:nth-child(3){width:45%}
+.skeleton-card .sk-score{display:flex;gap:8px;margin-top:10px}
+.skeleton-card .sk-score div{flex:1;height:38px;background:var(--bg-skeleton);border-radius:6px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* ── Score explanation ── */
+.explain-box{background:var(--bg-explanation);border-radius:10px;padding:10px;margin:8px 0;font-size:12px;line-height:1.6}
+.explain-box .tl{font-weight:600;margin-bottom:4px;color:var(--text-secondary)}
+
+/* ── Detail bar (drawer内使用) ── */
+.detail-bar{background:var(--bg-surface);border-radius:8px;padding:10px;display:flex;gap:8px;flex-wrap:wrap;font-size:12px;margin-top:6px}
+.detail-bar span{padding:2px 8px;border-radius:4px;white-space:nowrap;color:var(--text-secondary)}
+.detail-bar b{color:var(--text-primary)}
+.good{color:var(--green)}.ok{color:var(--amber)}.bad{color:var(--red)}
+
+/* ── AI blurb ── */
+.ai-blurb{background:var(--bg-blurb);border-radius:8px;padding:10px;margin:8px 0;font-size:13px;line-height:1.5;border-left:3px solid #ffd700;position:relative}
+.ai-blurb .ai-tag{position:absolute;top:-7px;right:8px;background:#ffd700;color:#333;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600}
+.ai-blurb .ai-tag.pending{background:#ccc;color:#666}
+
+/* ── Itinerary ── */
+.itin-box{background:var(--bg-itin);border-radius:10px;padding:10px;margin:8px 0;font-size:12px;border-left:3px solid #1976d2}
+.itin-box .it-title{font-weight:600;color:var(--accent);margin-bottom:4px}
+.itin-day{padding:4px 0;border-bottom:1px solid var(--border-stat)}
+.itin-day:last-child{border-bottom:none}
+
+/* ── Error ── */
+.toast{display:none;position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:2000;background:var(--red);color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;box-shadow:0 8px 30px rgba(0,0,0,.2);animation:slideDown .3s ease}
+@keyframes slideDown{from{transform:translateX(-50%) translateY(-20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+@keyframes mtSpin{to{transform:rotate(360deg)}}
+
+/* ── Empty state ── */
+.empty-msg{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:15px;line-height:1.8}
+.empty-msg .ek{font-size:40px;margin-bottom:8px}
+
+
+/* ── Map ── */
+.map-wrap{display:none;margin-bottom:20px}
+.map-wrap.active{display:block}
+.map-box{width:100%;height:360px;border-radius:16px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.map-label{background:var(--bg-card);border-radius:0 0 16px 16px;padding:4px 12px;font-size:11px;color:var(--text-muted);text-align:center;border-top:1px solid var(--border-card)}
+
+
+/* ── Multi-City ── */
+.mc-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;margin-left:8px;transition:opacity .15s}
+.mc-btn:hover{opacity:.85}
+.mc-card{border:1px solid var(--border-card);border-radius:12px;padding:16px;margin:10px 0;background:var(--bg-card-alt);page-break-inside:avoid}
+.mc-card h3{font-size:15px;margin:0 0 6px;display:flex;align-items:center;gap:6px;color:var(--text-primary)}
+.mc-route{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0;font-size:13px}
+.mc-city{background:var(--accent);color:#fff;padding:3px 10px;border-radius:6px;font-weight:600;font-size:12px}
+.mc-arrow{color:var(--text-muted);font-size:12px}
+.mc-transport{background:var(--bg-surface);border-radius:6px;padding:6px 10px;margin:6px 0;font-size:12px;color:var(--text-secondary)}
+.mc-budget{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;margin:6px 0}
+.mc-bitem{background:var(--bg-card);border:1px solid var(--border-default);border-radius:6px;padding:6px 8px;font-size:12px}
+.mc-bitem .lbl{color:var(--text-muted);font-size:10px}
+.mc-bitem .val{font-weight:600;color:var(--text-primary);font-size:14px}
+.mc-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px;color:var(--text-muted);border-top:1px solid var(--border-card);padding-top:8px}
+.mc-score{display:inline-block;background:var(--accent-dim);padding:2px 8px;border-radius:4px;font-weight:700;font-size:12px;color:var(--accent)}
+
+
+/* ── Reviews ── */
+.review-popup{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center}
+.review-popup-inner{background:var(--bg-modal);border-radius:12px;max-width:520px;width:90%;max-height:80vh;overflow-y:auto;padding:20px;border:1px solid var(--border-card)}
+.review-popup-inner .close{float:right;top:-6px;position:relative;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted)}
+.review-item{padding:10px;margin:6px 0;border:1px solid var(--border-default);border-radius:8px}
+
+/* ── Booking ── */
+.book-btn{display:inline-block;padding:3px 10px;background:var(--accent);color:#fff!important;border-radius:6px;font-size:11px;cursor:pointer;text-decoration:none;transition:opacity .15s}
+.book-btn:hover{opacity:.85}
+.book-popup{display:none;position:fixed;background:var(--popup-bg);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.3);min-width:250px;max-width:300px;max-height:400px;overflow-y:auto;border:1px solid var(--border-card)}
+.book-popup.active{display:block}
+.book-popup .bp-title{font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border-default)}
+.book-popup a{display:flex;align-items:center;gap:4px;padding:5px 6px;border-radius:6px;text-decoration:none;font-size:12px;transition:background .1s;color:var(--text-primary)}
+.book-popup a:hover{background:var(--bg-score)}
+.book-popup .bp-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.booking-wrap{position:relative;display:inline-block}
+
+/* ── 天气预警弹窗 ── */
+.weather-modal-list{max-height:60vh;overflow-y:auto}
+.weather-modal-item{padding:10px;margin:4px 0;border:1px solid var(--border-default);border-radius:8px;display:flex;align-items:center;gap:8px;background:var(--bg-card-alt)}
+.weather-modal-city{font-weight:600;min-width:80px;color:var(--text-primary);font-family:var(--font-display)}
+.weather-modal-badge{font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600}
+.weather-modal-msg{font-size:12px;color:var(--text-secondary);flex:1}
+
+
+/* ── Weather Warnings ── */
+.warn-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:600;margin:2px 4px 2px 0;white-space:nowrap;background:var(--bg-glass)}
+.warn-2{color:var(--red);border:1px solid rgba(248,113,113,0.3)}
+.warn-1{color:var(--amber);border:1px solid rgba(251,191,36,0.3)}
+.warn-box{margin:6px 0 0;display:flex;flex-wrap:wrap}
+
+/* ── Footer ── */
+footer{text-align:center;color:var(--text-muted);font-family:var(--font-body);font-size:11px;letter-spacing:0.06em;margin-top:32px;padding:20px 0;border-top:1px solid var(--border-card)}
+
+/* ── Tab 导航 ── */
+.tab-bar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;border-bottom:1px solid var(--border-card);padding-bottom:12px}
+.tab-btn{padding:10px 20px;border:none;border-radius:10px;font-family:var(--font-display);font-size:13px;font-weight:600;letter-spacing:0.02em;cursor:pointer;background:transparent;color:var(--text-muted);transition:all .2s;flex:1;min-width:120px;text-align:center}
+.tab-btn:hover{background:rgba(167,139,250,0.08);color:var(--text-primary)}
+.tab-btn.active{background:var(--accent-dim);color:var(--accent);box-shadow:none}
+.tab-content{display:none}
+.tab-content.active{display:block}
+#poiResults{display:flex;flex-direction:column;gap:0}
+#multiResults{display:flex;flex-direction:column;gap:0}
+
+
+/* ── Editor-style Drawer ── */
+.drawer-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:2000}
+.drawer-overlay.active{display:block}
+.drawer{position:fixed;top:0;right:-600px;width:min(560px,92vw);height:100%;background:var(--bg-card);border-left:1px solid var(--border-card);box-shadow:-12px 0 40px rgba(0,0,0,.4);z-index:2001;overflow-y:auto;transition:right .35s cubic-bezier(.4,0,.2,1)}
+.drawer.open{right:0}
+.drawer-header{position:sticky;top:0;z-index:2;display:flex;align-items:center;padding:20px;background:var(--bg-card);border-bottom:1px solid var(--border-default)}
+.drawer-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted);padding:0 16px 0 0;transition:color .15s}
+.drawer-close:hover{color:var(--text-primary)}
+.drawer-title{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text-primary)}
+.drawer-body{padding:20px}
+.drawer-body h3{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--text-primary);margin:12px 0 6px}
+.drawer-body p{font-size:14px;line-height:1.6;color:var(--text-secondary);margin-bottom:8px}
+.drawer-body hr{border:none;height:1px;background:linear-gradient(to right,var(--accent-dim),transparent);margin:14px 0}
+
+/* ── POI / 旧式结果卡片 ── */
+.result-card{background:var(--bg-card-alt);border-radius:12px;padding:14px;margin-bottom:10px;border-left:3px solid var(--accent-dim);cursor:pointer;transition:transform .15s}
+.result-card:hover{transform:translateX(4px)}
+.result-card.selected{outline:2px solid var(--accent);background:var(--bg-card-selected)}
+#poiResults .result-card{border-left-color:var(--accent);margin-bottom:0;border-radius:0;border-bottom:1px solid var(--border-card)}
+
+/* ── 预览卡网格 ── */
+.preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:24px}
+.preview-card{background:var(--bg-card-alt);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease;border-left:none;animation:fadeIn .35s ease;position:relative}
+.preview-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);opacity:0.6;transition:opacity .2s}
+.preview-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.preview-card:hover::before{opacity:1}
+.preview-card.selected{background:var(--bg-card-selected)}
+.preview-card.selected::before{opacity:1;width:4px}
+
+/* ── 图片占位区域 ── */
+.preview-image{width:100%;aspect-ratio:4/3;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.preview-image .city-letter{font-family:var(--font-display);font-size:64px;font-weight:800;opacity:0.12;color:var(--text-primary);user-select:none}
+.preview-image .sel-circle{position:absolute;top:10px;right:10px;z-index:2;width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:rgba(255,255,255,.6);transition:all .2s;background:rgba(0,0,0,.25)}
+.preview-image .sel-circle:hover{border-color:var(--accent);background:var(--accent-dim)}
+.preview-image .sel-circle.on{background:var(--accent);border-color:var(--accent)}
+.preview-image .sel-circle.on::after{content:"\2713";color:#fff;font-weight:700;font-size:13px}
+
+/* ── 卡片信息区 ── */
+.preview-body{padding:16px}
+.preview-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.preview-rank{width:28px;height:28px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.preview-name{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-0.01em;color:var(--text-primary);flex:1}
+.preview-score{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--accent)}
+
+/* ── 评分条 (5 维度) ── */
+.preview-stats{display:flex;flex-direction:column;gap:5px;margin:10px 0 12px;font-size:12px}
+.preview-stat{display:flex;align-items:center;gap:8px}
+.preview-stat .stat-label{flex:0 0 40px;font-size:11px;color:var(--text-muted);white-space:nowrap}
+.preview-stat .stat-bar{flex:1;height:4px;border-radius:2px;background:var(--bg-score);overflow:hidden}
+.preview-stat .stat-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.stat-fill.c5{background:var(--accent)}.stat-fill.c4{background:var(--accent)}.stat-fill.c3{background:var(--amber);opacity:.7}.stat-fill.c2{background:var(--amber);opacity:.5}.stat-fill.c1{background:var(--red);opacity:.6}.stat-fill.c0{background:var(--red);opacity:.3}
+.preview-stat .stat-num{flex:0 0 28px;font-size:11px;font-weight:600;color:var(--text-secondary);text-align:right}
+
+/* ── 标签行 ── */
+.preview-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
+.preview-tag{font-size:10px;color:var(--text-muted);background:var(--bg-score);border-radius:4px;padding:2px 8px;letter-spacing:0.04em}
+
+/* ── 查看详情按钮 ── */
+.preview-more{display:block;width:100%;padding:9px;margin-top:4px;border:none;border-radius:8px;background:transparent;color:var(--accent);font-family:var(--font-display);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;letter-spacing:0.04em}
+.preview-more:hover{background:rgba(167,139,250,0.08)}
+.preview-more .arrow{display:inline-block;transition:transform .2s}
+.preview-more:hover .arrow{transform:translateX(4px)}
+
+/* ── 结果头部标签 ── */
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.results-header h2{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--text-primary);letter-spacing:-0.02em}
+.results-header .results-divider{flex:1;height:1px;background:linear-gradient(to right,var(--accent-dim),transparent);margin:0 16px}
+#selLabel{font-size:12px;color:var(--accent);font-weight:500}
+
+/* ── 全局工具栏 ── */
+.global-toolbar{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.tool-btn{width:44px;height:44px;border:none;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.3);transition:transform .15s,opacity .15s}
+.tool-btn:hover{transform:scale(1.08)}
+.tool-btn:active{transform:scale(.95)}
+.tool-btn-primary{background:#667eea;color:#fff}
+.tool-btn-amber{background:#f59e0b;color:#fff}
+.tool-btn-green{background:#10b981;color:#fff}
+.tool-btn-gray{background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border-default)}
+.tool-badge{position:relative}
+.tool-badge::after{content:attr(data-count);position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg-card)}
+
+/* ── Modal overlay ── */
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-modal-overlay);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg-modal);border-radius:16px;padding:24px;max-width:960px;width:90%;max-height:90vh;overflow-y:auto;position:relative;animation:modalIn .25s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal .close{position:absolute;top:12px;right:16px;font-size:26px;cursor:pointer;color:var(--text-muted);transition:color .15s;line-height:1}
+.modal .close:hover{color:var(--text-primary)}
+
+/* ── Price trend row + booking icon ── */
+.pt-row{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
+.pt-flight{font-size:11px;color:var(--text-secondary);white-space:nowrap}
+.pt-flight b{color:var(--accent)}
+.book-btn-icon{font-size:11px;color:var(--text-muted);text-decoration:none;cursor:pointer;padding:1px 6px;border:1px solid var(--border-default);border-radius:4px;transition:all .15s;white-space:nowrap}
+.book-btn-icon:hover{border-color:var(--accent);color:var(--accent)}
+/* ── More menu (...) dropdown ── */
+.more-menu{position:relative;display:inline-block;margin-left:auto}
+.more-btn{background:none;border:1px solid var(--border-default);border-radius:6px;color:var(--text-secondary);font-size:16px;font-weight:700;cursor:pointer;padding:2px 10px;line-height:1;transition:all .15s}
+.more-btn:hover{background:var(--bg-score);border-color:var(--accent)}
+.more-dropdown{display:none;position:absolute;right:0;top:100%;margin-top:4px;background:var(--bg-card);border:1px solid var(--border-default);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;min-width:150px;padding:4px;overflow:hidden}
+.more-dropdown.active{display:block}
+.more-dropdown button{display:block;width:100%;padding:8px 12px;border:none;background:none;color:var(--text-primary);font-size:12px;cursor:pointer;text-align:left;border-radius:6px;transition:background .12s}
+.more-dropdown button:hover{background:var(--bg-score)}
+.more-dropdown button:disabled{color:var(--text-muted);cursor:not-allowed}
+.more-dropdown button:disabled:hover{background:none}
+
+</style>
+</head>
+<body>
+<div class="container">
+<h1>旅行推荐系统<span class="sub">Editorial Travel Guide</span></h1>
+
+<!-- ── Tab 导航栏 ── -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="recommend">🎯 目的地推荐</button>
+  <button class="tab-btn" data-tab="poi">🔍 景点探索</button>
+  <button class="tab-btn" data-tab="multi">🌐 多城市联游</button>
+</div>
+
+<!-- ── Tab：目的地推荐 ── -->
+<div class="tab-content active" id="tab-recommend">
+<div class="card">
+<div class="form-grid">
+<div class="form-group"><label>预算 (元)</label><input type="number" id="budget" value="4000" step="500"></div>
+<div class="form-group"><label>天数</label><select id="days"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option><option>10</option><option>14</option></select></div>
+<div class="form-group"><label>日期</label><input type="month" id="travel_date" value="2026-07"></div>
+<div class="form-group"><label>出发地</label><input type="text" id="departure" value="上海"></div>
+<div class="form-group"><label>人数</label><select id="travelers"><option>单人</option><option selected>情侣</option><option>朋友</option><option>家庭</option><option>带娃</option><option>老人</option></select></div>
+<div class="form-group"><label>范围</label><select id="region"><option selected>不限</option><option>国内</option><option>国外</option></select></div>
+<div class="form-group full"><label>偏好</label><input type="text" id="preferences" value="海滩, 美食"></div>
+<button class="btn" id="searchBtn" >
+<span class="spinner"></span><span class="btn-text">搜索目的地</span>
+</button>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="map-wrap" id="mapWrap">
+<div class="map-box" id="mapBox"></div>
+<div class="map-label">目的地定位地图</div>
+</div>
+<div id="results"></div>
+</div><!-- /tab-recommend -->
+
+<!-- ── Tab：景点探索 ── -->
+<div class="tab-content" id="tab-poi">
+<div class="card" id="poiCard">
+<div class="form-grid">
+<div class="form-group"><label>🔍 景点搜索</label><input type="text" id="poiQ" placeholder="搜景点名、城市、关键词..." value=""></div>
+<div class="form-group"><label>城市</label><select id="poiCity"><option value="">全部城市</option></select></div>
+<div class="form-group"><label>类型</label><select id="poiType"><option value="">全部类型</option></select></div>
+<div class="form-group"><label>每页</label><select id="poiLimit"><option>10</option><option selected>20</option><option>50</option></select></div>
+<button class="btn" id="poiSearchBtn">
+<span class="spinner"></span><span class="btn-text">🔎 搜景点</span>
+</button>
+</div>
+<div id="poiStats" style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center;">共 <span id="poiCount">24,413</span> 个景点数据，AI 智能描述</div>
+<div id="poiResults"></div>
+<div id="poiPagination" style="text-align:center;margin-top:12px;display:none"></div>
+</div>
+</div>
+
+<!-- ── Tab：多城市联游 ── -->
+<div class="tab-content" id="tab-multi">
+<div class="card">
+  <div style="text-align:center;padding:20px;color:var(--text-muted)">
+    🌐 点击「搜索目的地」后，在此查看跨城市联游方案
+  </div>
+</div>
+<div id="multiResults"></div>
+</div>
+
+
+<footer>Powered by 小比 🐾</footer>
+</div>
+
+<!-- ── 侧滑抽屉 ── -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()">
+<div class="drawer" id="drawer" onclick="event.stopPropagation()">
+<div class="drawer-header">
+<button class="drawer-close" onclick="closeDrawer()">✕</button>
+<span class="drawer-title" id="drawerTitle">详情</span>
+</div>
+<div class="drawer-body" id="drawerBody"></div>
+</div>
+</div>
+
+<!-- ── 天气预警弹窗 ── -->
+<div class="modal-overlay" id="weatherModal" onclick="this.classList.remove('active')">
+<div class="modal" onclick="event.stopPropagation()">
+<span class="close" onclick="document.getElementById('weatherModal').classList.remove('active')">&times;</span>
+<h2>🌤 天气预警</h2>
+<div class="weather-modal-list" id="weatherModalList">
+<div style="text-align:center;padding:20px;color:var(--text-muted)">暂无天气预警</div>
+</div>
+</div>
+</div>
+
+<!-- compareModal removed in Step 10 -->
+
+
+<script src="js/app.js?v=2026061213162"></script>
+<script defer src="js/map.js?v=2026061122"></script>
+<script>
+window._AMapSecurityConfig = { securityJsCode: '3ca9456394bc116e4f286728d0ddf470' };
+</script>
+<script defer src="https://webapi.amap.com/maps?v=2.0&key=c3f42783f3081dab7f5235ba4d1903d2&plugin=AMap.Marker,AMap.Icon"></script>
+
+
+<!-- ── 全局工具栏 ── -->
+<div class="global-toolbar">
+
+<button class="tool-btn tool-btn-amber tool-badge" id="weatherBtn" onclick="showWeatherModal()" data-count="0">⚠️</button>
+<button class="tool-btn tool-btn-green" id="flightBtn" onclick="showFlightPanel()">✈️</button>
+<button class="tool-btn tool-btn-gray" id="reviewBtn" onclick="showReviewPanel()">⭐</button>
+</div>
+<script>
+
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  setTimeout(function(){t.style.display='none'},3000);
+}
+function escapeHtml(s){
+  if(!s)return'';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+</script>
+</body>
+</html>

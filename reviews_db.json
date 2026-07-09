@@ -1,0 +1,654 @@
+[
+  {
+    "id": "rev_001",
+    "destination": "三亚",
+    "user": "张先生",
+    "rating": 4.8,
+    "content": "亚龙湾的沙滩太美了，海水清澈见底，酒店服务也很到位，下次带爸妈再来。",
+    "date": "2026-06",
+    "traveler_type": "couple",
+    "budget_range": "5000-8000",
+    "tags": [
+      "沙滩美",
+      "服务好",
+      "适合情侣"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_002",
+    "destination": "三亚",
+    "user": "李女士",
+    "rating": 4.5,
+    "content": "性价比很高的度假选择，海鲜自助很赞，就是暑假人有点多。",
+    "date": "2026-05",
+    "traveler_type": "family",
+    "budget_range": "4000-6000",
+    "tags": [
+      "性价比高",
+      "海鲜赞",
+      "人有点多"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_003",
+    "destination": "三亚",
+    "user": "王先生",
+    "rating": 4.2,
+    "content": "玩得挺开心的，水上项目很丰富。建议避开节假日高峰期。",
+    "date": "2026-04",
+    "traveler_type": "friends",
+    "budget_range": "3000-5000",
+    "tags": [
+      "水上项目",
+      "人多"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_004",
+    "destination": "三亚",
+    "user": "陈女士",
+    "rating": 5.0,
+    "content": "无敌海景房，每天醒来就是大海，太幸福了！度假天堂！",
+    "date": "2026-03",
+    "traveler_type": "couple",
+    "budget_range": "6000-10000",
+    "tags": [
+      "海景房",
+      "度假天堂",
+      "完美"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_005",
+    "destination": "成都",
+    "user": "赵先生",
+    "rating": 4.7,
+    "content": "成都太好玩了！火锅串串根本停不下来，大熊猫也超可爱。",
+    "date": "2026-06",
+    "traveler_type": "friends",
+    "budget_range": "3000-5000",
+    "tags": [
+      "美食天堂",
+      "熊猫",
+      "火锅"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_006",
+    "destination": "成都",
+    "user": "孙女士",
+    "rating": 4.9,
+    "content": "第三次来成都了，每次都有新发现。宽窄巷子、锦里都很有味道。",
+    "date": "2026-05",
+    "traveler_type": "solo",
+    "budget_range": "2000-4000",
+    "tags": [
+      "文化",
+      "自由行",
+      "吃货天堂"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_007",
+    "destination": "成都",
+    "user": "周先生",
+    "rating": 4.3,
+    "content": "带爸妈来的，他们很喜欢。杜甫草堂很有文化氛围。",
+    "date": "2026-04",
+    "traveler_type": "family",
+    "budget_range": "4000-6000",
+    "tags": [
+      "适合带老人",
+      "文化氛围"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_008",
+    "destination": "杭州",
+    "user": "吴女士",
+    "rating": 4.6,
+    "content": "西湖边散步太惬意了，龙井茶也很好喝。整个城市很有诗意。",
+    "date": "2026-06",
+    "traveler_type": "couple",
+    "budget_range": "3000-5000",
+    "tags": [
+      "西湖",
+      "诗意",
+      "浪漫"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_009",
+    "destination": "杭州",
+    "user": "郑先生",
+    "rating": 4.4,
+    "content": "灵隐寺很震撼，素斋也不错。西湖醋鱼名不虚传。",
+    "date": "2026-05",
+    "traveler_type": "solo",
+    "budget_range": "2000-4000",
+    "tags": [
+      "灵隐寺",
+      "美食",
+      "文化"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_010",
+    "destination": "杭州",
+    "user": "黄女士",
+    "rating": 4.8,
+    "content": "带娃去的西湖和动物园，娃超级开心。整个城市很干净。",
+    "date": "2026-04",
+    "traveler_type": "family",
+    "budget_range": "4000-6000",
+    "tags": [
+      "亲子",
+      "干净",
+      "西湖"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_011",
+    "destination": "厦门",
+    "user": "林先生",
+    "rating": 4.5,
+    "content": "鼓浪屿很有文艺气息，沙茶面好好吃！推荐住一晚鼓浪屿。",
+    "date": "2026-06",
+    "traveler_type": "couple",
+    "budget_range": "3000-5000",
+    "tags": [
+      "文艺",
+      "美食",
+      "小清新"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_012",
+    "destination": "厦门",
+    "user": "杨女士",
+    "rating": 4.7,
+    "content": "厦门大学真的太美了，环岛路骑行很舒服。还会再来。",
+    "date": "2026-05",
+    "traveler_type": "friends",
+    "budget_range": "2500-4000",
+    "tags": [
+      "厦大",
+      "骑行",
+      "美"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_013",
+    "destination": "大理",
+    "user": "刘先生",
+    "rating": 4.9,
+    "content": "洱海骑车，苍山看雪，大理古城喝咖啡，简直是神仙日子。",
+    "date": "2026-06",
+    "traveler_type": "solo",
+    "budget_range": "3000-5000",
+    "tags": [
+      "洱海",
+      "苍山",
+      "治愈"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_014",
+    "destination": "大理",
+    "user": "徐女士",
+    "rating": 4.6,
+    "content": "住了洱海边的民宿，风景绝了。就是紫外线强，一定做好防晒。",
+    "date": "2026-05",
+    "traveler_type": "couple",
+    "budget_range": "4000-6000",
+    "tags": [
+      "民宿",
+      "洱海",
+      "防晒"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_015",
+    "destination": "丽江",
+    "user": "马先生",
+    "rating": 4.3,
+    "content": "古城很有特色，但商业化有点严重。玉龙雪山是真壮观。",
+    "date": "2026-06",
+    "traveler_type": "friends",
+    "budget_range": "3000-5000",
+    "tags": [
+      "古城",
+      "商业",
+      "雪山"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_016",
+    "destination": "丽江",
+    "user": "朱女士",
+    "rating": 4.8,
+    "content": "四方街晚上太热闹了，腊排骨火锅yyds！下次还来！",
+    "date": "2026-04",
+    "traveler_type": "couple",
+    "budget_range": "2500-4500",
+    "tags": [
+      "热闹",
+      "美食",
+      "有趣"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_017",
+    "destination": "桂林",
+    "user": "胡先生",
+    "rating": 4.7,
+    "content": "桂林山水甲天下，真的不是吹的。漓江竹筏漂流太享受了。",
+    "date": "2026-05",
+    "traveler_type": "family",
+    "budget_range": "3000-5000",
+    "tags": [
+      "山水",
+      "竹筏",
+      "壮观"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_018",
+    "destination": "桂林",
+    "user": "曹女士",
+    "rating": 4.5,
+    "content": "阳朔西街很热闹，啤酒鱼很好吃。十里画廊骑行推荐！",
+    "date": "2026-04",
+    "traveler_type": "couple",
+    "budget_range": "2500-4000",
+    "tags": [
+      "阳朔",
+      "骑行",
+      "啤酒鱼"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_019",
+    "destination": "黄山",
+    "user": "方先生",
+    "rating": 4.9,
+    "content": "迎客松、云海、日出，一样不少！黄山归来不看岳，名不虚传。",
+    "date": "2026-05",
+    "traveler_type": "friends",
+    "budget_range": "3000-5000",
+    "tags": [
+      "云海",
+      "日出",
+      "震撼"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_020",
+    "destination": "黄山",
+    "user": "谭女士",
+    "rating": 4.4,
+    "content": "爬山确实累，但风景绝对值得。山顶住宿比较贵，但看日出方便。",
+    "date": "2026-04",
+    "traveler_type": "couple",
+    "budget_range": "4000-6000",
+    "tags": [
+      "累但值",
+      "日出",
+      "山顶住宿"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_021",
+    "destination": "重庆",
+    "user": "罗先生",
+    "rating": 4.6,
+    "content": "8D魔幻城市名不虚传，导航根本没用。洪崖洞夜景绝了。",
+    "date": "2026-06",
+    "traveler_type": "friends",
+    "budget_range": "2000-4000",
+    "tags": [
+      "魔幻",
+      "夜景",
+      "火锅"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_022",
+    "destination": "重庆",
+    "user": "谢女士",
+    "rating": 4.5,
+    "content": "磁器口好逛好吃，李子坝轻轨穿楼很神奇。重庆人好热情。",
+    "date": "2026-05",
+    "traveler_type": "solo",
+    "budget_range": "1500-3000",
+    "tags": [
+      "轻轨穿楼",
+      "热情",
+      "消费低"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_023",
+    "destination": "北京",
+    "user": "冯先生",
+    "rating": 4.3,
+    "content": "故宫太宏伟了，建议租讲解器。长城也很壮观，就是游客太多。",
+    "date": "2026-05",
+    "traveler_type": "family",
+    "budget_range": "5000-8000",
+    "tags": [
+      "故宫",
+      "长城",
+      "人多"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_024",
+    "destination": "北京",
+    "user": "韩女士",
+    "rating": 4.7,
+    "content": "北京的秋天太美了！香山红叶、胡同遛弯，很惬意。",
+    "date": "2026-04",
+    "traveler_type": "couple",
+    "budget_range": "4000-6000",
+    "tags": [
+      "秋天",
+      "胡同",
+      "浪漫"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_025",
+    "destination": "青岛",
+    "user": "唐先生",
+    "rating": 4.6,
+    "content": "八大关的建筑很美，啤酒博物馆很好玩。蛤蜊啤酒太爽了！",
+    "date": "2026-06",
+    "traveler_type": "friends",
+    "budget_range": "2500-4000",
+    "tags": [
+      "啤酒",
+      "八大局",
+      "爽"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_026",
+    "destination": "青岛",
+    "user": "苏女士",
+    "rating": 4.8,
+    "content": "带孩子去的，海洋馆很棒，浴场也干净。下次还来！",
+    "date": "2026-05",
+    "traveler_type": "family",
+    "budget_range": "3000-5000",
+    "tags": [
+      "亲子",
+      "海洋馆",
+      "干净"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_027",
+    "destination": "西安",
+    "user": "彭先生",
+    "rating": 4.7,
+    "content": "兵马俑太震撼了！不亲眼看到无法想象那个场面。肉夹馍好吃！",
+    "date": "2026-05",
+    "traveler_type": "solo",
+    "budget_range": "2000-4000",
+    "tags": [
+      "兵马俑",
+      "震撼",
+      "美食"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_028",
+    "destination": "西安",
+    "user": "田女士",
+    "rating": 4.5,
+    "content": "大唐不夜城晚上的表演很精彩。建议穿汉服去，氛围感拉满。",
+    "date": "2026-04",
+    "traveler_type": "couple",
+    "budget_range": "3000-5000",
+    "tags": [
+      "不夜城",
+      "汉服",
+      "氛围"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_029",
+    "destination": "上海",
+    "user": "董先生",
+    "rating": 4.2,
+    "content": "外滩夜景还是很美的，迪士尼排队真的太久了。城市很国际化。",
+    "date": "2026-06",
+    "traveler_type": "couple",
+    "budget_range": "5000-8000",
+    "tags": [
+      "外滩",
+      "迪士尼排队",
+      "国际化"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_030",
+    "destination": "上海",
+    "user": "梁女士",
+    "rating": 4.6,
+    "content": "武康路很好逛，咖啡店很多。上海中心视野震撼。",
+    "date": "2026-05",
+    "traveler_type": "solo",
+    "budget_range": "3000-5000",
+    "tags": [
+      "武康路",
+      "咖啡",
+      "文艺"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_031",
+    "destination": "苏州",
+    "user": "许女士",
+    "rating": 4.8,
+    "content": "拙政园的园林艺术太美了，每一步都是风景。平江路很有味道。",
+    "date": "2026-05",
+    "traveler_type": "couple",
+    "budget_range": "2000-4000",
+    "tags": [
+      "园林",
+      "精致",
+      "平江路"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_032",
+    "destination": "南京",
+    "user": "何先生",
+    "rating": 4.6,
+    "content": "中山陵很肃穆，夫子庙小吃街不错。南京的历史感很厚重。",
+    "date": "2026-04",
+    "traveler_type": "family",
+    "budget_range": "2500-4500",
+    "tags": [
+      "历史",
+      "中山陵",
+      "小吃"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_033",
+    "destination": "广州",
+    "user": "吕先生",
+    "rating": 4.5,
+    "content": "广州的美食真的名不虚传，早茶太幸福了。小蛮腰夜景很美。",
+    "date": "2026-06",
+    "traveler_type": "friends",
+    "budget_range": "3000-5000",
+    "tags": [
+      "早茶",
+      "小蛮腰",
+      "美食"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_034",
+    "destination": "珠海",
+    "user": "苏女士",
+    "rating": 4.7,
+    "content": "长隆海洋王国太好玩了，孩子开心得不得了。情侣路也很浪漫。",
+    "date": "2026-05",
+    "traveler_type": "family",
+    "budget_range": "4000-6000",
+    "tags": [
+      "长隆",
+      "亲子",
+      "浪漫"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_035",
+    "destination": "长沙",
+    "user": "金先生",
+    "rating": 4.4,
+    "content": "茶颜悦色确实好喝！橘子洲头夜景很棒，长沙夜生活丰富。",
+    "date": "2026-05",
+    "traveler_type": "friends",
+    "budget_range": "2000-3500",
+    "tags": [
+      "茶颜悦色",
+      "夜生活",
+      "消费低"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_036",
+    "destination": "成都+四川",
+    "user": "贺女士",
+    "rating": 4.7,
+    "content": "成都出发去了九寨沟，人间仙境！不过车程有点远，但值了。",
+    "date": "2026-06",
+    "traveler_type": "couple",
+    "budget_range": "5000-8000",
+    "tags": [
+      "九寨沟",
+      "仙境",
+      "值了"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_037",
+    "destination": "峨眉山+乐山",
+    "user": "魏先生",
+    "rating": 4.6,
+    "content": "乐山大佛太壮观了，峨眉山的猴子好调皮，金顶云海好美。",
+    "date": "2026-05",
+    "traveler_type": "family",
+    "budget_range": "3000-5000",
+    "tags": [
+      "大佛",
+      "猴子",
+      "云海"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_038",
+    "destination": "水乡（西塘/乌镇）",
+    "user": "姜女士",
+    "rating": 4.5,
+    "content": "乌镇的夜景真的很美，西塘更原生态一些。建议住一晚感受氛围。",
+    "date": "2026-05",
+    "traveler_type": "couple",
+    "budget_range": "1500-3000",
+    "tags": [
+      "夜景",
+      "原生态",
+      "民宿"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_039",
+    "destination": "顺德（广东）",
+    "user": "方女士",
+    "rating": 4.9,
+    "content": "顺德真·美食天堂！双皮奶、鱼生、烧鹅，每个都好吃到哭！",
+    "date": "2026-04",
+    "traveler_type": "friends",
+    "budget_range": "1500-3000",
+    "tags": [
+      "美食天堂",
+      "双皮奶",
+      "便宜好吃"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_040",
+    "destination": "顺德（广东）",
+    "user": "郭先生",
+    "rating": 4.8,
+    "content": "专程来顺德吃的，果然没失望。清晖园也很精致。",
+    "date": "2026-03",
+    "traveler_type": "couple",
+    "budget_range": "2000-3500",
+    "tags": [
+      "美食",
+      "精致",
+      "不失望"
+    ],
+    "photos": []
+  },
+  {
+    "id": "rev_041",
+    "destination": "测试目的地",
+    "user": "测试用户",
+    "rating": 5,
+    "content": "小比测试评价！",
+    "date": "2026-06",
+    "traveler_type": "solo",
+    "budget_range": "",
+    "tags": [
+      "测试"
+    ],
+    "photos": []
+  }
+]

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>旅行推荐</title>
+<style>
+body{font-family:sans-serif;background:#667eea;padding:20px}
+.card{background:#fff;border-radius:12px;padding:20px;margin:0 auto;max-width:600px}
+button{padding:10px 20px;background:#667eea;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;width:100%;margin-top:10px}
+pre{background:#f5f5f5;padding:10px;border-radius:8px;font-size:13px;overflow:auto}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>TRAVEL RECOMMENDER</h2>
+<form onsubmit="doSearch();return false">
+<input type="number" id="budget" value="4000" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ccc;border-radius:6px" placeholder="Budget">
+<input type="text" id="prefs" value="beach, food" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ccc;border-radius:6px" placeholder="Preferences">
+<button type="submit">SEARCH</button>
+</form>
+<div id="out" style="margin-top:10px;font-size:14px;color:#666">Click SEARCH to get recommendations</div>
+</div>
+<script>
+function doSearch() {
+  document.getElementById('out').textContent = 'Searching...';
+  var b = document.getElementById('budget').value;
+  var p = document.getElementById('prefs').value;
+  var url = '/api/recommend?budget=' + b + '&days=5&travel_date=2026-07&departure=Shanghai&preferences=' + encodeURIComponent(p) + '&region=all';
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var data = JSON.parse(xhr.responseText);
+      var html = data.results.map(function(r, i) {
+        return '<b>#' + (i+1) + ' ' + r.name + '</b> score=' + r.total_score + '<br>';
+      }).join('');
+      document.getElementById('out').innerHTML = html;
+    } else {
+      document.getElementById('out').textContent = 'Error: ' + xhr.status;
+    }
+  };
+  xhr.onerror = function() {
+    document.getElementById('out').textContent = 'Network error';
+  };
+  xhr.send();
+}
+</script>
+</body>
+</html>

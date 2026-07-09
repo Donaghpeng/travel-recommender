@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Diagnostic</title>
+</head>
+<body>
+<h1 style="color:#fff;background:#667eea;padding:20px;text-align:center">If you see this, server works ✓</h1>
+<div id="test"></div>
+<script>
+// Test 1: basic function works
+function test1(){return "Function test: OK"}
+document.getElementById("test").innerHTML = test1();
+
+// Test 2: SVG data URI
+var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><rect width="200" height="100" fill="#667eea"/><text x="100" y="55" text-anchor="middle" font-size="18" fill="white">TEST SVG</text></svg>';
+var img = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+document.getElementById("test").innerHTML += '<br><img src="'+img+'" style="width:200px;height:100px;border-radius:8px">';
+
+// Test 3: emoji in string
+var emoji = '\u{1F3D6}';
+document.getElementById("test").innerHTML += '<br>Emoji test: ' + emoji + ' (should show icon)';
+</script>
+</body>
+</html>
