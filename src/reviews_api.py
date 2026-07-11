@@ -2,7 +2,7 @@
 reviews_api.py — 评价数据读写与统计
 """
 import json, os
-from models import Review, ReviewStats
+from src.models import Review, ReviewStats
 
 DIR = os.path.dirname(__file__)
 DB_PATH = os.path.join(DIR, "reviews_db.json")

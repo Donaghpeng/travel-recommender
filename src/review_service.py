@@ -136,7 +136,7 @@ def batch_fetch_reviews(destinations) -> int:
 
 
 if __name__ == "__main__":
-    from travel_recommender import load_destinations
+    from src.travel_recommender import load_destinations
 
     print("Fetching review data...")
     dests = load_destinations()

@@ -3,7 +3,7 @@
 destinations_data.py — Expanded destination database (50+)
 Classification system with main types and sub-tags
 """
-from travel_recommender import Destination
+from src.travel_recommender import Destination
 
 # Type system
 # Main types: Beach, Mountain, City, AncientTown, Nature, Food, Island, Adventure, Culture, Countryside

@@ -124,7 +124,7 @@ def batch_generate(results: list, budget: int, days: int, prefs: list) -> list:
 # ─── Test ──────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    from travel_recommender import TravelRecommender
+    from src.travel_recommender import TravelRecommender
 
     rec = TravelRecommender()
     results = rec.recommend({

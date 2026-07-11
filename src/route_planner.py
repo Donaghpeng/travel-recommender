@@ -4,10 +4,10 @@ route_planner.py — 多城市路线规划引擎
 支持通过 recommended_cities 与单城市推荐结果联动
 """
 import random, math
-from city_clusters import CLUSTERS, match_clusters
+from src.city_clusters import CLUSTERS, match_clusters
 
 
-from risk_checker import assess_route_risks
+from src.risk_checker import assess_route_risks
 
 
 def _calc_path_cost(route, edges, budget):

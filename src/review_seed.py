@@ -3,7 +3,7 @@
 review_seed.py — Seed realistic review data for all 58 destinations
 Based on publicly known ratings from multiple travel platforms
 """
-from review_db import init_db, upsert_dest, save_review_summary
+from src.review_db import init_db, upsert_dest, save_review_summary
 
 # Each entry: (dest_name, rating, count, tags, summary, excellent%, good%, avg%, poor%, terrible%)
 REVIEW_DATA = [
@@ -278,7 +278,7 @@ def seed_all():
 
 def get_aggregated_rating(dest_name: str) -> dict:
     """Get the best available rating data for a destination"""
-    from review_db import get_dest_id, get_review_summary
+    from src.review_db import get_dest_id, get_review_summary
 
     dest_id = get_dest_id(dest_name)
     if not dest_id:

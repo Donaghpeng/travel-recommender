@@ -4,20 +4,20 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # 加载 .env 配置文件
-_env_path = Path(__file__).parent / ".env"
+_env_path = Path(__file__).resolve().parent.parent / ".env"
 if _env_path.exists():
     load_dotenv(_env_path)
 
 from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from travel_recommender import TravelRecommender
-from itinerary import add_itinerary_to_results
-from cache_manager import result_cache, run_periodic_cleanup
-from memory import short_term, medium_term, long_term
-from feedback import save_feedback, init_db, get_feedback_summary
-from flight_tracker import track_route, batch_track, get_route_info, get_low_price_alerts, estimate_price, set_alert, check_alerts, get_my_alerts, remove_alert, get_price_history, track_route as _track_route
-from zh_names import CN_NAMES
+from src.travel_recommender import TravelRecommender
+from src.itinerary import add_itinerary_to_results
+from src.cache_manager import result_cache, run_periodic_cleanup
+from src.memory import short_term, medium_term, long_term
+from src.feedback import save_feedback, init_db, get_feedback_summary
+from src.flight_tracker import track_route, batch_track, get_route_info, get_low_price_alerts, estimate_price, set_alert, check_alerts, get_my_alerts, remove_alert, get_price_history, track_route as _track_route
+from src.zh_names import CN_NAMES
 
 logging.basicConfig(
     level=logging.INFO,
@@ -107,7 +107,7 @@ def _build_discovery_result(city_name: str, parsed_data: dict) -> dict:
 init_db()
 app = FastAPI()
 recommender = TravelRecommender()
-STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "static")
 
 # ─── 搜索缓存磁盘持久化 ─────────────────────────
 RESULT_CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "result_cache.json")
@@ -141,7 +141,7 @@ threading.Thread(target=run_periodic_cleanup, args=(300,), daemon=True).start()
 CACHE_DATA_VERSION = "v2"  # v2: 126 destinations (was 58)
 
 
-from reviews_api import get_reviews, get_review_stats, get_top_reviews, add_review
+from src.reviews_api import get_reviews, get_review_stats, get_top_reviews, add_review
 
 
 def _cache_key(inp: dict) -> str:
@@ -162,7 +162,7 @@ def _get(inp):
 def _enrich_ctrip(key, results, inp):
     """Background: add Ctrip travel advice to results"""
     try:
-        from ctrip_integration import enrich_with_ctrip
+        from src.ctrip_integration import enrich_with_ctrip
         results = enrich_with_ctrip(results, inp)
         result_cache.set(key, results, ttl=300)
         logger.info("[ctrip] enriched %s", str(inp)[:30])
@@ -172,7 +172,7 @@ def _enrich_ctrip(key, results, inp):
 def _warn_weather(key, results, inp):
     """Background: add weather warnings"""
     try:
-        from weather_service import enrich_with_warnings
+        from src.weather_service import enrich_with_warnings
         results = enrich_with_warnings(results, inp)
         result_cache.set(key, results, ttl=300)
         logger.info("[warn] enriched %s", str(inp)[:40])
@@ -191,7 +191,7 @@ def _track_results(departure, results):
 def _enrich_weather(key, results, inp):
     """Background: fetch real Open-Meteo weather for top results"""
     try:
-        from weather_service import compute_monthly_avg
+        from src.weather_service import compute_monthly_avg
         month = int(inp.get("travel_date", "2026-07").split("-")[1])
         for res in results:
             lat = res.get("latitude")
@@ -219,7 +219,7 @@ def _enrich_ai(key, results, inp):
         if need_ai == 0:
             return
         time.sleep(0.1)  # let the response go out first
-        from ai_writer import batch_generate
+        from src.ai_writer import batch_generate
         enriched = batch_generate(results, inp["budget"], inp["days"], inp.get("preferences", []))
         if enriched:
             result_cache.set(key, enriched, ttl=300)
@@ -231,9 +231,9 @@ def _enrich_ai(key, results, inp):
 async def startup():
     # Init long-term memory
     try:
-        from travel_recommender import TravelRecommender
+        from src.travel_recommender import TravelRecommender
         _rec = TravelRecommender()
-        from zh_names import CN_NAMES
+        from src.zh_names import CN_NAMES
         dests = [{"name": d.name, "name_cn": CN_NAMES.get(d.name, d.name),
                   "description": d.description, "keywords": d.keywords, "type": d.dest_type}
                  for d in _rec.destinations]
@@ -360,7 +360,7 @@ async def remove_flight_alert(alert_id: int = 0):
 @app.get("/api/dest-image")
 async def dest_image(name="", name_cn="", dest_type=""):
     """Get destination image (local file or SVG)"""
-    from dest_images import get_dest_image
+    from src.dest_images import get_dest_image
     result = get_dest_image(name, name_cn, dest_type)
     return {"url": result["url"], "name": name, "name_cn": name_cn,
             "source": result.get("source", "svg")}
@@ -369,7 +369,7 @@ async def dest_image(name="", name_cn="", dest_type=""):
 @app.get("/api/ctrip/checklist")
 async def ctrip_checklist():
     """出行前核对清单"""
-    from ctrip_integration import get_checklist
+    from src.ctrip_integration import get_checklist
     return {"checklist": get_checklist()}
 
 
@@ -482,7 +482,7 @@ async def multi_city(
     # 将推荐城市名传入联游引擎
     inp["recommended_cities"] = recommended_cities
 
-    from route_planner import recommend_routes
+    from src.route_planner import recommend_routes
     routes = recommend_routes(inp)
     return {"routes": routes, "input": inp, "recommended_cities": recommended_cities}
 
@@ -721,7 +721,7 @@ async def poi_city_brief(city: str = Query("")):
                 lon = d["coords"].get("lng")
                 break
         if lat and lon:
-            from weather_service import _latitude_estimate
+            from src.weather_service import _latitude_estimate
             import time as tm
             now = tm.localtime()
             est = _latitude_estimate(lat, now.tm_mon)
@@ -746,12 +746,12 @@ async def poi_city_brief(city: str = Query("")):
 async def weather_warning(lat: float = 31.23, lon: float = 121.47, month: int = 7):
     """Get weather warnings for a location"""
     try:
-        from weather_service import get_forecast, check_weather_warnings
+        from src.weather_service import get_forecast, check_weather_warnings
         fc = get_forecast(lat, lon, days=7)
         if fc and fc.get("temp_hi") is not None:
             hi, lo, rain = fc["temp_hi"], fc.get("temp_lo", 20), fc.get("rain", 0)
         else:
-            from weather_service import _latitude_estimate
+            from src.weather_service import _latitude_estimate
             est = _latitude_estimate(lat, month)
             hi, lo, rain = est["temp_hi"], est["temp_lo"], est.get("rain", 0)
         warnings = check_weather_warnings(lat, lon, month, hi, lo, rain)
@@ -763,7 +763,7 @@ async def weather_warning(lat: float = 31.23, lon: float = 121.47, month: int = 
 @app.get("/api/booking")
 async def booking_links(departure="上海", destination="三亚", travel_date="2026-07"):
     """Get booking links for a destination"""
-    from booking_links import generate_links
+    from src.booking_links import generate_links
     return {"platforms": generate_links(departure, destination, travel_date)}
 
 
@@ -814,7 +814,7 @@ async def flight_trend(departure="Shanghai", destination="Sanya", travel_date="2
 async def track_search(departure="Shanghai", destinations="Sanya"):
     """Track prices for search results"""
     dests = [d.strip() for d in destinations.split(",") if d.strip()]
-    from flight_tracker import batch_track
+    from src.flight_tracker import batch_track
     results = batch_track(departure, dests)
     return {"tracked": len(results), "routes": results}
 

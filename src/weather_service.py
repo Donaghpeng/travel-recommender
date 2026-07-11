@@ -8,7 +8,7 @@ weather_service.py — Open-Meteo 天气集成 (v3)
 import json, time, os, urllib.request
 from datetime import datetime
 
-from cache_manager import weather_cache as mem_cache
+from src.cache_manager import weather_cache as mem_cache
 
 CACHE_DIR = os.path.join(os.path.dirname(__file__), ".weather_cache")
 os.makedirs(CACHE_DIR, exist_ok=True)

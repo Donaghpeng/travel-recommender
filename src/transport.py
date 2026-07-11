@@ -230,7 +230,7 @@ def estimate_all(departure: str, dest, days: int, season_idx: int = 1) -> dict:
 
 def batch_test(departure: str = "Shanghai", season_idx: int = 1):
     """Test cost estimation for all destinations"""
-    from travel_recommender import load_destinations
+    from src.travel_recommender import load_destinations
 
     dests = load_destinations()
     print(f"\nTransport estimates from {departure}:")

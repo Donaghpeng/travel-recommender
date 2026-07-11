@@ -10,17 +10,17 @@ from dataclasses import dataclass, field
 from typing import Optional
 import math
 import json
-from zh_names import CN_NAMES
+from src.zh_names import CN_NAMES
 
 # Optional real-data services (graceful fallback if unavailable)
 try:
-    from weather_service import compute_monthly_avg as _real_weather
+    from src.weather_service import compute_monthly_avg as _real_weather
     _HAS_REAL_WEATHER = True
 except ImportError:
     _HAS_REAL_WEATHER = False
 
 try:
-    from transport import estimate_all as _estimate_transport
+    from src.transport import estimate_all as _estimate_transport
     _HAS_TRANSPORT = True
 except ImportError:
     _HAS_TRANSPORT = False
@@ -57,10 +57,10 @@ class Destination:
 
 def load_destinations() -> list[Destination]:
     try:
-        from destinations_data import load_all as _load_all
+        from src.destinations_data import load_all as _load_all
         dests = _load_all()
         try:
-            from review_seed import get_aggregated_rating as _db_review
+            from src.review_seed import get_aggregated_rating as _db_review
             for d in dests:
                 r = _db_review(d.name)
                 if r:

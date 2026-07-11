@@ -2,7 +2,7 @@
 budget_splitter.py — 跨城市预算分配
 为联游方案生成各城市详细的费用拆解
 """
-from route_planner import _allocate_days
+from src.route_planner import _allocate_days
 
 
 def split_budget(budget: int, days: int, route: list[str],

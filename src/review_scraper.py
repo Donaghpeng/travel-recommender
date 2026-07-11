@@ -5,7 +5,7 @@ Targets: 马蜂窝 (mafengwo.cn), 携程 (ctrip.com)
 Rate-limited, cached in SQLite
 """
 import urllib.request, urllib.error, json, re, time, random, os
-from review_db import init_db, upsert_dest, save_review_summary, get_review_summary
+from src.review_db import init_db, upsert_dest, save_review_summary, get_review_summary
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
@@ -223,7 +223,7 @@ def batch_scrape(dest_names: list[str], max_count: int = 0):
 
 
 if __name__ == "__main__":
-    from travel_recommender import load_destinations
+    from src.travel_recommender import load_destinations
     dests = load_destinations()
     names = [d.name for d in dests]
     print(f"Scraping {len(names)} destinations (rate limited)...")
